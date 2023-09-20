@@ -1,0 +1,8 @@
+weather:
+  endpoint: https://api.openweathermap.org/data/2.5/weather?q=
+  api:
+    key: f42b4e776912cc232bc85c9849b07074
+
+server:
+  port: 8088
+

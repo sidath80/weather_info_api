@@ -1,0 +1,73 @@
+buildscript {
+    ext {
+        generatedSourcesDir = "${buildDir}/generated/src/main/java"
+        set('snippetsDir', file("build/generated-snippets"))
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.4.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'org.openapi.generator' version '5.2.1'
+    id 'org.asciidoctor.convert' version '1.5.8'
+}
+
+group 'com.sample.weather'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'io.swagger:swagger-annotations:1.6.11'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    runtimeOnly 'com.h2database:h2'
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$projectDir/src/main/resources/api.yml"
+    outputDir = "$projectDir/build/generated"
+    apiPackage = "alwaysbemark.example.api"
+    modelPackage = "alwaysbemark.example.model"
+    configOptions = [
+            interfaceOnly       : "true",
+            openApiNullable     : "false",
+            skipDefaultInterface: "true"
+    ]
+    globalProperties = [
+            apis  : "",
+            models: ""
+    ]
+    library = "spring-boot"
+    sourceSets.main.java.srcDirs = ['build/generated/src/main/java', 'src/main/java']
+}
+compileJava.dependsOn tasks.openApiGenerate
+processResources.dependsOn tasks.openApiGenerate
+
+test {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}
