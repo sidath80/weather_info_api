@@ -1,8 +1,8 @@
 package com.sample.weather.repoitory;
 
-import alwaysbemark.example.model.InlineResponse200;
 import com.sample.weather.exception.ClientException;
 import com.sample.weather.exception.ServerException;
+import com.weather.model.InlineResponse200;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;

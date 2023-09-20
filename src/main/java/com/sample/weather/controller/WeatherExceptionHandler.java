@@ -2,7 +2,9 @@ package com.sample.weather.controller;
 
 import com.sample.weather.exception.ClientException;
 import com.sample.weather.exception.FieldValidationException;
+import com.sample.weather.exception.InvalidClientAPIKeyException;
 import com.sample.weather.exception.ServerException;
+import com.sample.weather.model.ApiError;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,27 +15,39 @@ import java.util.NoSuchElementException;
 public class WeatherExceptionHandler {
 
     @ExceptionHandler(ClientException.class)
-    public ResponseEntity<String> handleClientError(ClientException exception) {
-        return ResponseEntity.status(400).body("Client Error: " + exception.getMessage());
-    }
-
-    @ExceptionHandler(ServerException.class)
-    public ResponseEntity<String> handleServerError(ServerException exception) {
-        return ResponseEntity.status(500).body("Server Error : " + exception.getMessage());
+    public ResponseEntity<ApiError> handleClientError(ClientException exception) {
+        return ResponseEntity.status(400).body(buildError(400, exception.getMessage()));
     }
 
     @ExceptionHandler(FieldValidationException.class)
-    public ResponseEntity<String> handleRequestValidation(FieldValidationException exception) {
-        return ResponseEntity.status(400).body("Validation Error : " + exception.getMessage());
+    public ResponseEntity<ApiError> handleRequestValidation(FieldValidationException exception) {
+        return ResponseEntity.status(400).body(buildError(400, exception.getMessage()));
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleRequestValidation(NoSuchElementException exception) {
-        return ResponseEntity.status(500).body("Weather result not found: " + exception.getMessage());
+    public ResponseEntity<ApiError> handleNoSuchElement(NoSuchElementException exception) {
+        return ResponseEntity.status(400).body(buildError(400, exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidClientAPIKeyException.class)
+    public ResponseEntity<ApiError> handleInvalidClientAPIKeyException(InvalidClientAPIKeyException exception) {
+        return ResponseEntity.status(400).body(buildError(400, exception.getMessage()));
+    }
+
+    @ExceptionHandler(ServerException.class)
+    public ResponseEntity<ApiError> handleServerError(ServerException exception) {
+        return ResponseEntity.status(500).body(buildError(500, exception.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRequestValidation(RuntimeException exception) {
-        return ResponseEntity.status(500).body("Downstream server Error: " + exception.getMessage());
+    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException exception) {
+        return ResponseEntity.status(500).body(buildError(500, exception.getMessage()));
+    }
+
+    private ApiError buildError(int code, String message) {
+        return new ApiError.Builder()
+                .errorCode(code)
+                .errorMessage(message)
+                .build();
     }
 }

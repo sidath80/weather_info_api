@@ -2,9 +2,11 @@
 
 This endpoint allows clients to retrieve information about the current weather.
 
-* @param Country
-* @param City
-* @param Api Key
+* @Header param api-key
+
+* @Request param country
+* @Request param city
+
 * @return A json with city country and describing today's weather.
 
 ## Table of Contents
@@ -19,21 +21,32 @@ This endpoint allows clients to retrieve information about the current weather.
 
 ## Introduction
 
-1. **Protocol and Host**:
+* **Protocol and Host**:
     - `http GET`
     - `localhost:8088`
-2. **Path**:
+* **Path**:
     - `/v1/weather`
-3. **Query Parameters**:
+* **Header Parameter**:
+    - `api-key=abcd-001
+* **Query Parameters**:
     - `country=uk`
     - `city=london`
-    - `apiKey=abcd`
-4. **Response**:
+* **Response**:
+
+Success response
 ```code
    {
     "city": "london",
     "country": "uk",
     "description": "scattered clouds"
+   }
+```
+
+Error response
+```code
+   {
+    "errorCode": 400,
+    "errorMessage": "apiKey is invalid"
    }
 ```
 
@@ -46,11 +59,11 @@ For building and running the application you need:
 
 ### Building the application locally
 
-Following command will run unit tests, generate client code and build the application locally
+Following command will run unit tests,Components tests,MVC tests,generate client code and build the application locally
 
 ```shell
-git clone https://github.com/sidath80/weather_info_api.git
-./gradlew clean build OR gradlew clean build
+1 Download the code : git clone https://github.com/sidath80/weather_info_api.git
+2 Build in local : ./gradlew clean build OR gradlew clean build
 
 ```
 
@@ -59,6 +72,8 @@ git clone https://github.com/sidath80/weather_info_api.git
 ```shell
 ./gradlew bootRun OR gradlew bootRun
 ```
+You can find the Open API Specification here :
+* http://localhost:8088/swagger-ui/index.html
 
 ## Configuration
 
@@ -69,31 +84,25 @@ All configuration are in the application.yml
 
 ## Testing
 
-You can just type following URL in the Browser
+You can find the Open API Specification here :
+* http://localhost:8088/swagger-ui/index.html
 
-* http://localhost:8088/v1/weather?country=uk&city=london&apiKey=abcd
 
 - Following keys are valid for access this API
-    * abcd
-    * efgh
-    * ijkl
-    * mnop
-    * qrst
+    * abcd-001
+    * abcd-002
+    * abcd-003
+    * abcd-004
+    * abcd-005
 
 ## Assumption
 
-1. I assume that API key generation and validation should be a simple implementation.
-2. As a result, I did not incorporate any complex implementation and instead conducted manual testing.
-3. A background thread is running to reset the key count.
-4. H2 DB is used to save weather information, and it is expected to be used for future data analytics
-5. It is not clear with this statements,
-   The API will query the data from H2
+* I assume that API key generation and validation should be a simple implementation So it is stored in the application.yml.
+* H2 DB is used to save weather information, and it is expected to be used for future data analytics
 
 ## Improvements
 
-1. Need to write integration tests for WeatherRepository class by having mock
-   server (https://www.npmjs.com/package/stubby) using docker.
-2. We store API keys in server memory, which poses a limitation on scalability. To address this issue, we can enhance
-   our system by implementing a caching mechanism, such as Redis
+* In production API-KEY should implement using JWT and validating via API gateway. (KONG)
+
 
 
