@@ -49,13 +49,15 @@ For building and running the application you need:
 Following command will run unit tests, generate client code and build the application locally
 
 ```shell
-./gradlew build
+git clone https://github.com/sidath80/weather_info_api.git
+./gradlew clean build OR gradlew clean build
+
 ```
 
 ### Running the application locally
 
 ```shell
-./gradlew bootRun
+./gradlew bootRun OR gradlew bootRun
 ```
 
 ## Configuration
