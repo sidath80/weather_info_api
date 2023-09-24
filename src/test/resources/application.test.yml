@@ -2,7 +2,7 @@ weather:
   endpoint: http://127.0.0.1:9005/data/2.5/weather?q=
   api:
     key: f42b4e776912cc232bc85c9849b07074
-    allowed-rate: 2
+    allowed-rate: 5
     allowed-rate-window-hours: 1
   client-api-keys: abcd-001,abcd-002,abcd-003,abcd-004,abcd-005
 

@@ -1,4 +1,4 @@
-package com.sample.weather.config;
+package com.sample.weather.configaration;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -6,12 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class WeatherConfiguration {
+public class BeanConfiguration {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder
-                .errorHandler(new CustomeResponseErrorHandler())
+                .errorHandler(new RestTemplateResponseErrorHandler())
                 .build();
     }
 }

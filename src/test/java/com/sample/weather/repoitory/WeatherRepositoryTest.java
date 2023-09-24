@@ -1,7 +1,7 @@
 package com.sample.weather.repoitory;
 
-import com.sample.weather.exception.ClientException;
-import com.sample.weather.exception.ServerException;
+import com.sample.weather.exception.ClientRequestException;
+import com.sample.weather.exception.InternalServerException;
 import com.weather.model.InlineResponse200;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 class WeatherRepositoryTest {
 
     @InjectMocks
-    WeatherRepository weatherRepository;
+    WeatherUpstreamRepository weatherRepository;
 
     @Mock
     RestTemplate restTemplate;
@@ -33,7 +33,7 @@ class WeatherRepositoryTest {
     InlineResponse200 inlineResponse200;
 
     @Test
-    void getWeather_success_for_ukLondon() {
+    void getWeatherSuccessForUkLondon() {
         when(inlineResponse200.getWeather().get(0).getDescription()).thenReturn("cloudy");
         when(restTemplate.getForObject(anyString(),eq(InlineResponse200.class))).thenReturn(inlineResponse200);
 
@@ -43,16 +43,16 @@ class WeatherRepositoryTest {
     }
 
     @Test
-    void getWeather_throws_serverError_for_anyString() {
-        when(restTemplate.getForObject(anyString(),eq(InlineResponse200.class))).thenThrow(ServerException.class);
+    void getWeatherThrowsServerErrorForAnyString() {
+        when(restTemplate.getForObject(anyString(),eq(InlineResponse200.class))).thenThrow(InternalServerException.class);
 
-        assertThrows(ServerException.class,() -> weatherRepository.getWeather(anyString(), anyString()));
+        assertThrows(InternalServerException.class,() -> weatherRepository.getWeather(anyString(), anyString()));
     }
 
     @Test
-    void getWeather_throws_clientError_for_anyString() {
-        when(restTemplate.getForObject(anyString(),eq(InlineResponse200.class))).thenThrow(ClientException.class);
+    void getWeatherThrowsClientErrorForAnyString() {
+        when(restTemplate.getForObject(anyString(),eq(InlineResponse200.class))).thenThrow(ClientRequestException.class);
 
-        assertThrows(ClientException.class,() -> weatherRepository.getWeather(anyString(), anyString()));
+        assertThrows(ClientRequestException.class,() -> weatherRepository.getWeather(anyString(), anyString()));
     }
 }

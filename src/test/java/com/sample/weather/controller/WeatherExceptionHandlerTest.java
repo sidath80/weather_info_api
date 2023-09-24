@@ -1,10 +1,10 @@
 package com.sample.weather.controller;
 
-import com.sample.weather.exception.ClientException;
+import com.sample.weather.exception.ClientRequestException;
 import com.sample.weather.exception.FieldValidationException;
 import com.sample.weather.exception.InvalidClientAPIKeyException;
-import com.sample.weather.exception.ServerException;
-import com.sample.weather.model.ApiError;
+import com.sample.weather.exception.InternalServerException;
+import com.sample.weather.model.ApiErrorResponse;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class WeatherExceptionHandlerTest {
 
     @InjectMocks
-    WeatherExceptionHandler weatherExceptionHandler;
+    GeneralExceptionHandler weatherExceptionHandler;
 
     @Test
     void handleClientError() {
-        ResponseEntity<ApiError> response = weatherExceptionHandler.handleClientError(new ClientException("Client error"));
+        ResponseEntity<ApiErrorResponse> response = weatherExceptionHandler.handleRequestError(new ClientRequestException("Client error"));
         assertAll("response",
                 () -> assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST)),
                 () -> assertThat(response.getBody().getErrorCode(), is(400)),
@@ -34,7 +34,7 @@ class WeatherExceptionHandlerTest {
 
     @Test
     void handleServerError() {
-        ResponseEntity<ApiError> response = weatherExceptionHandler.handleServerError(new ServerException("Server error"));
+        ResponseEntity<ApiErrorResponse> response = weatherExceptionHandler.handleInternalServerError(new InternalServerException("Server error"));
         assertAll("response",
                 () -> assertThat(response.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR)),
                 () -> assertThat(response.getBody().getErrorCode(), is(500)),
@@ -43,7 +43,7 @@ class WeatherExceptionHandlerTest {
 
     @Test
     void handleRequestValidation() {
-        ResponseEntity<ApiError> response = weatherExceptionHandler.handleRequestValidation(new FieldValidationException("Field validation error"));
+        ResponseEntity<ApiErrorResponse> response = weatherExceptionHandler.handleRequestError(new FieldValidationException("Field validation error"));
         assertAll("response",
                 () -> assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST)),
                 () -> assertThat(response.getBody().getErrorCode(), is(400)),
@@ -52,7 +52,7 @@ class WeatherExceptionHandlerTest {
 
     @Test
     void handleNoSuchElement() {
-        ResponseEntity<ApiError> response = weatherExceptionHandler.handleNoSuchElement(new NoSuchElementException("No Such element error"));
+        ResponseEntity<ApiErrorResponse> response = weatherExceptionHandler.handleRequestError(new NoSuchElementException("No Such element error"));
         assertAll("response",
                 () -> assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST)),
                 () -> assertThat(response.getBody().getErrorCode(), is(400)),
@@ -61,7 +61,7 @@ class WeatherExceptionHandlerTest {
 
     @Test
     void handleInvalidClientAPIKeyException() {
-        ResponseEntity<ApiError> response = weatherExceptionHandler.handleInvalidClientAPIKeyException(new InvalidClientAPIKeyException("A valid api-key header is required"));
+        ResponseEntity<ApiErrorResponse> response = weatherExceptionHandler.handleRequestError(new InvalidClientAPIKeyException("A valid api-key header is required"));
         assertAll("response",
                 () -> assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST)),
                 () -> assertThat(response.getBody().getErrorCode(), is(400)),
@@ -70,7 +70,7 @@ class WeatherExceptionHandlerTest {
 
     @Test
     void handleRuntimeException() {
-        ResponseEntity<ApiError> response = weatherExceptionHandler.handleRuntimeException(new RuntimeException("Runtime error"));
+        ResponseEntity<ApiErrorResponse> response = weatherExceptionHandler.handleInternalServerError(new RuntimeException("Runtime error"));
         assertAll("response",
                 () -> assertThat(response.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR)),
                 () -> assertThat(response.getBody().getErrorCode(), is(500)),

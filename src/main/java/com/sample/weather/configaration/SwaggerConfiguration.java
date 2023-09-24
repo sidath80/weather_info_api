@@ -1,4 +1,4 @@
-package com.sample.weather.config;
+package com.sample.weather.configaration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.Collections;
 
 @Configuration
-public class SwaggerConfig {
+public class SwaggerConfiguration {
 
     private ApiInfo apiInfo() {
         return new ApiInfo("Weather Rest APIs",

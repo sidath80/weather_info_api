@@ -32,6 +32,6 @@ public class AccessRateMonitorService {
     }
 
     private Bandwidth getLimit() {
-        return Bandwidth.classic(rate, Refill.greedy(rate, Duration.ofHours(timeWindowHours)));
+        return Bandwidth.classic(rate+1, Refill.greedy(rate, Duration.ofHours(timeWindowHours)));
     }
 }

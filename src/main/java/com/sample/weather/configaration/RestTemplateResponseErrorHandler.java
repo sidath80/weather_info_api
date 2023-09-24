@@ -1,12 +1,12 @@
-package com.sample.weather.config;
+package com.sample.weather.configaration;
 
-import com.sample.weather.exception.ServerException;
+import com.sample.weather.exception.InternalServerException;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import java.io.IOException;
 
-public class CustomeResponseErrorHandler implements ResponseErrorHandler {
+public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
 
     @Override
     public boolean hasError(ClientHttpResponse httpResponse) throws IOException {
@@ -15,7 +15,7 @@ public class CustomeResponseErrorHandler implements ResponseErrorHandler {
 
     @Override
     public void handleError(ClientHttpResponse httpResponse) throws IOException {
-        throw new ServerException(httpResponse.getBody().toString());
+        throw new InternalServerException(httpResponse.getBody().toString());
     }
 
 }

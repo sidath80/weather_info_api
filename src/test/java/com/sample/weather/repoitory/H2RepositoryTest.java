@@ -21,7 +21,7 @@ public class H2RepositoryTest {
 
     @Test
     @Transactional
-    public void shouldUpdateExistingEntryInDBWithoutSave() {
+    public void shouldSaveWeatherData() {
 
         Weather weather = Weather.builder()
                 .city("Colombo")

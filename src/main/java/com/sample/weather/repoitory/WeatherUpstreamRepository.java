@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Repository
 @RequiredArgsConstructor
-public class WeatherRepository {
+public class WeatherUpstreamRepository {
 
     @Value("${weather.endpoint}")
     private String weatherUrl;

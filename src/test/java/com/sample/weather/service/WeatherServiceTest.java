@@ -1,9 +1,9 @@
 package com.sample.weather.service;
 
-import com.sample.weather.exception.ClientException;
-import com.sample.weather.exception.ServerException;
+import com.sample.weather.exception.ClientRequestException;
+import com.sample.weather.exception.InternalServerException;
 import com.sample.weather.repoitory.WeatherH2Repository;
-import com.sample.weather.repoitory.WeatherRepository;
+import com.sample.weather.repoitory.WeatherUpstreamRepository;
 import com.weather.model.InlineResponse200;
 import com.weather.model.InlineResponse200Weather;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class WeatherServiceTest {
     WeatherH2Repository weatherH2Repository;
 
     @Mock
-    private WeatherRepository weatherRepository;
+    private WeatherUpstreamRepository weatherRepository;
 
     @Mock
     InlineResponse200 weatherData;
@@ -41,7 +41,7 @@ class WeatherServiceTest {
     InlineResponse200Weather weather;
 
     @Test
-    void getWeather_success_for_ukLondon() {
+    void getWeatherSuccessForUkLondon() {
 
         when(weatherRepository.getWeather(anyString(), anyString())).thenReturn(weatherData);
         when(weatherData.getWeather()).thenReturn(List.of(weather));
@@ -54,18 +54,18 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getWeather_throws_serverError_for_anyString() {
-        when(weatherRepository.getWeather(anyString(), anyString())).thenThrow(ServerException.class);
+    void getWeatherThrowsServerErrorForAnyString() {
+        when(weatherRepository.getWeather(anyString(), anyString())).thenThrow(InternalServerException.class);
 
-        assertThrows(ServerException.class,() -> weatherService.getWeather(anyString(), anyString()));
+        assertThrows(InternalServerException.class,() -> weatherService.getWeather(anyString(), anyString()));
         verify(weatherH2Repository,never()).save(any(com.sample.weather.entity.Weather.class));
     }
 
     @Test
-    void getWeather_throws_clientError_for_anyString() {
-        when(weatherRepository.getWeather(anyString(), anyString())).thenThrow(ClientException.class);
+    void getWeatherThrowsClientErrorForAnyString() {
+        when(weatherRepository.getWeather(anyString(), anyString())).thenThrow(ClientRequestException.class);
 
-        assertThrows(ClientException.class,() -> weatherService.getWeather(anyString(), anyString()));
+        assertThrows(ClientRequestException.class,() -> weatherService.getWeather(anyString(), anyString()));
         verify(weatherH2Repository,never()).save(any(com.sample.weather.entity.Weather.class));
     }
 }

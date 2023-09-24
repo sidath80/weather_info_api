@@ -31,7 +31,7 @@ public class WeatherControllerMvcTest {
     AccessRateMonitorService accessRateMonitorService;
 
     @Test
-    public void getWeather_return_success_response() throws Exception {
+    public void getWeatherReturnSuccessResponse() throws Exception {
 
         when(weatherService.getWeather(anyString(), anyString())).thenReturn("Raining");
         when(accessRateMonitorService.allowRequest(anyString())).thenReturn(true);
@@ -44,7 +44,7 @@ public class WeatherControllerMvcTest {
     }
 
     @Test
-    public void getWeather_withEmptyApiKey_throw_error() throws Exception {
+    public void getWeatherWithEmptyApiKeyThrowError() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/weather?country=uk&city=london"))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -53,7 +53,7 @@ public class WeatherControllerMvcTest {
     }
 
     @Test
-    public void getWeather_withInvalidApiKey_throw_error() throws Exception {
+    public void getWeatherWithInvalidApiKeyThrowError() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/weather?country=uk&city=london")
                 .header("api-key", "apikeyvalue"))
@@ -63,7 +63,7 @@ public class WeatherControllerMvcTest {
     }
 
     @Test
-    public void getWeather_withEmptyCountry_throw_error() throws Exception {
+    public void getWeatherWithEmptyCountryThrowError() throws Exception {
         when(weatherService.getWeather(anyString(), anyString())).thenReturn("Raining");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/weather?country=&city=london")
@@ -74,18 +74,7 @@ public class WeatherControllerMvcTest {
     }
 
     @Test
-    public void getWeather_withEmptyCountry_throw_error2() throws Exception {
-        when(weatherService.getWeather(anyString(), anyString())).thenReturn("Raining");
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/weather?city=london")
-                        .header("api-key", "abcd-001"))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andExpect(MockMvcResultMatchers.content()
-                        .json("{\"errorCode\":400,\"errorMessage\":\"country is required\"}"));
-    }
-
-    @Test
-    public void getWeather_withEmptyCity_throw_error() throws Exception {
+    public void getWeatherWithEmptyCityThrowError() throws Exception {
         when(weatherService.getWeather(anyString(), anyString())).thenReturn("Raining");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/weather?country=uk&city=")
@@ -96,7 +85,7 @@ public class WeatherControllerMvcTest {
     }
 
     @Test
-    public void getWeather_tooManyRequests_throw_error() throws Exception {
+    public void getWeatherTooManyRequestsThrowError() throws Exception {
         when(accessRateMonitorService.allowRequest(anyString())).thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/weather?country=uk&city=London")

@@ -1,6 +1,6 @@
 package com.sample.weather.repoitory;
 
-import com.sample.weather.exception.ServerException;
+import com.sample.weather.exception.InternalServerException;
 import com.weather.model.InlineResponse200Weather;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
@@ -20,7 +20,7 @@ import static org.mockserver.model.HttpResponse.response;
 public class WeatherRepositoryIntegrationTest {
 
     @Autowired
-    WeatherRepository weatherRepository;
+    WeatherUpstreamRepository weatherRepository;
 
     private static ClientAndServer mockServer;
 
@@ -101,7 +101,7 @@ public class WeatherRepositoryIntegrationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"error\":\"sample\"}")
         );
-        assertThrows(ServerException.class, () ->
+        assertThrows(InternalServerException.class, () ->
                 weatherRepository.getWeather( "sample", "sample2"));
     }
 }

@@ -1,7 +1,7 @@
 package com.sample.weather.controller;
 
-import com.sample.weather.exception.ClientException;
-import com.sample.weather.exception.ServerException;
+import com.sample.weather.exception.ClientRequestException;
+import com.sample.weather.exception.InternalServerException;
 import com.sample.weather.model.WeatherRequest;
 import com.sample.weather.model.WeatherResponse;
 import com.sample.weather.service.AccessRateMonitorService;
@@ -43,7 +43,7 @@ public class WeatherControllerUnitTest {
     }
 
     @Test
-    public void getWeather_return_success_response() {
+    public void getWeatheReturnSuccessResponse() {
         when(accessRateMonitorService.allowRequest(anyString())).thenReturn(true);
         when(weatherService.getWeather(anyString(), anyString())).thenReturn("Raining");
 
@@ -54,19 +54,19 @@ public class WeatherControllerUnitTest {
     }
 
     @Test
-    void getWeather_throws_serverError_for_anyString() {
+    void getWeatherThrowsServerErrorForAnyString() {
         when(accessRateMonitorService.allowRequest(anyString())).thenReturn(true);
-        when(weatherService.getWeather(anyString(), anyString())).thenThrow(ServerException.class);
+        when(weatherService.getWeather(anyString(), anyString())).thenThrow(InternalServerException.class);
 
-        assertThrows(ServerException.class,() -> controller.getWeatherByParam(weatherRequest,"abcd-001"));
+        assertThrows(InternalServerException.class,() -> controller.getWeatherByParam(weatherRequest,"abcd-001"));
     }
 
     @Test
-    void getWeather_throws_clientError_for_anyString() {
+    void getWeatherThrowsClientErrorForAnyString() {
         when(accessRateMonitorService.allowRequest(anyString())).thenReturn(true);
-        when(weatherService.getWeather(anyString(), anyString())).thenThrow(ClientException.class);
+        when(weatherService.getWeather(anyString(), anyString())).thenThrow(ClientRequestException.class);
 
-        assertThrows(ClientException.class,() -> controller.getWeatherByParam(weatherRequest,"abcd-001"));
+        assertThrows(ClientRequestException.class,() -> controller.getWeatherByParam(weatherRequest,"abcd-001"));
     }
 
 }

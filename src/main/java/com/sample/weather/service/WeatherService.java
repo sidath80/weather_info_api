@@ -1,9 +1,9 @@
 package com.sample.weather.service;
 
 import com.sample.weather.entity.Weather;
-import com.sample.weather.exception.ServerException;
+import com.sample.weather.exception.InternalServerException;
 import com.sample.weather.repoitory.WeatherH2Repository;
-import com.sample.weather.repoitory.WeatherRepository;
+import com.sample.weather.repoitory.WeatherUpstreamRepository;
 import com.weather.model.InlineResponse200;
 import com.weather.model.InlineResponse200Weather;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class WeatherService {
 
-    private final WeatherRepository weatherRepository;
+    private final WeatherUpstreamRepository weatherRepository;
     private final WeatherH2Repository weatherH2Repository;
 
     public String getWeather(String country, String city) {
@@ -22,7 +22,7 @@ public class WeatherService {
         String description = weatherData.getWeather().stream()
                 .map(InlineResponse200Weather::getDescription)
                 .findAny()
-                .orElseThrow(() -> new ServerException("weather details not found"));
+                .orElseThrow(() -> new InternalServerException("weather details not found"));
 
         Weather weather = Weather.builder()
                 .city(city)
