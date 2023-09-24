@@ -45,7 +45,7 @@ public class WeatherExceptionHandler {
     }
 
     private ApiError buildError(int code, String message) {
-        return new ApiError.Builder()
+        return ApiError.builder()
                 .errorCode(code)
                 .errorMessage(message)
                 .build();

@@ -15,9 +15,7 @@ public class CustomeResponseErrorHandler implements ResponseErrorHandler {
 
     @Override
     public void handleError(ClientHttpResponse httpResponse) throws IOException {
-        throw new ServerException(
-                httpResponse.getBody().toString()
-        );
+        throw new ServerException(httpResponse.getBody().toString());
     }
 
 }

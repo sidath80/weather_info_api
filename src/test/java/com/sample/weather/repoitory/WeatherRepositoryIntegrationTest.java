@@ -17,7 +17,7 @@ import static org.mockserver.model.HttpResponse.response;
 
 @SpringBootTest
 @TestPropertySource(properties = { "spring.config.location=classpath:application.test.yml" })
-public class WeatherRepositoryComponentTest {
+public class WeatherRepositoryIntegrationTest {
 
     @Autowired
     WeatherRepository weatherRepository;

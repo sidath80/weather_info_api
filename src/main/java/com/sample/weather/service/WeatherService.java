@@ -8,6 +8,7 @@ import com.weather.model.InlineResponse200;
 import com.weather.model.InlineResponse200Weather;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +24,16 @@ public class WeatherService {
                 .findAny()
                 .orElseThrow(() -> new ServerException("weather details not found"));
 
-        Weather weather = new Weather(description);
-        weatherH2Repository.save(weather);
+        Weather weather = Weather.builder()
+                .city(city)
+                .country(country)
+                .description(description)
+                .creationDateTime(LocalDateTime.now()).build();
+        saveWeatherInformation(weather);
         return description;
+    }
+
+    private void saveWeatherInformation(Weather weather){
+        weatherH2Repository.save(weather);
     }
 }

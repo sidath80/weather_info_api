@@ -16,18 +16,18 @@ public class WeatherRequestInterceptor implements HandlerInterceptor {
     @Value("${weather.client-api-keys}")
     private List<String> clientApiKeys;
 
-    String API_HEADER_NAME = "api-key";
+    final String API_HEADER_NAME = "api-key";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (request.getRequestURI().equals("/v1/weather")) {
             validateApiKey(request);
-            validateRequestParameter(request);
+            validateRequestParameters(request);
         }
         return true;
     }
 
-    private boolean validateApiKey(HttpServletRequest request) {
+    private void validateApiKey(HttpServletRequest request) {
         if (null == request.getHeader(API_HEADER_NAME)
                 || request.getHeader(API_HEADER_NAME).isEmpty()) {
             throw new FieldValidationException("api-key can not be blank");
@@ -35,11 +35,9 @@ public class WeatherRequestInterceptor implements HandlerInterceptor {
         if (!clientApiKeys.contains(request.getHeader(API_HEADER_NAME))) {
             throw new InvalidClientAPIKeyException("A valid api-key header is required");
         }
-        return true;
-
     }
 
-    private boolean validateRequestParameter(HttpServletRequest request) {
+    private void validateRequestParameters(HttpServletRequest request) {
         if (null == request.getParameter("city")
                 || request.getParameter("city").isEmpty()) {
             throw new FieldValidationException("city is required");
@@ -48,6 +46,5 @@ public class WeatherRequestInterceptor implements HandlerInterceptor {
                 || request.getParameter("country").isEmpty()) {
             throw new FieldValidationException("country is required");
         }
-        return true;
     }
 }

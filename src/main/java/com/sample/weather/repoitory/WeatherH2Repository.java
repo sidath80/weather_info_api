@@ -8,6 +8,5 @@ import java.util.List;
 public interface WeatherH2Repository extends CrudRepository<Weather, Long> {
 
     List<Weather> findByDescription(String description);
-
     Weather findById(long id);
 }

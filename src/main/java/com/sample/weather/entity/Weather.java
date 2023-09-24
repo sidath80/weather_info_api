@@ -1,22 +1,25 @@
 package com.sample.weather.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.Builder;
+import lombok.Getter;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Builder
+@Getter
 @Entity
 public class Weather {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    Long id;
 
-    private String description;
+    String description;
 
-    protected Weather() {
-    }
+    String city;
 
-    public Weather(String description) {
-        this.description = description;
-    }
+    String country;
+
+    LocalDateTime creationDateTime;
 }
