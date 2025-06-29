@@ -9,3 +9,10 @@ weather:
 server:
   port: 8088
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
+
