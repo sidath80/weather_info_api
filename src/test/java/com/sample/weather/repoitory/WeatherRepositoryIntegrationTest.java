@@ -1,13 +1,13 @@
 package com.sample.weather.repoitory;
 
 import com.sample.weather.exception.InternalServerException;
-import com.weather.model.InlineResponse200Weather;
 import org.junit.jupiter.api.*;
 import org.mockserver.integration.ClientAndServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import com.weather.model.Data25WeatherGet200ResponseWeatherInner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,7 +51,7 @@ public class WeatherRepositoryIntegrationTest {
         );
         var resp = weatherRepository.getWeather("sample", "sample2");
         assertEquals("moderate rain", resp.getWeather().stream()
-                .map(InlineResponse200Weather::getDescription)
+                .map(Data25WeatherGet200ResponseWeatherInner::getDescription)
                 .findAny().get());
     }
 

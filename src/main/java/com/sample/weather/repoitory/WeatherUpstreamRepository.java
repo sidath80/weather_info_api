@@ -1,6 +1,6 @@
 package com.sample.weather.repoitory;
 
-import com.weather.model.InlineResponse200;
+import com.weather.model.Data25WeatherGet200Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -18,9 +18,9 @@ public class WeatherUpstreamRepository {
 
     private final RestTemplate restTemplate;
 
-    public InlineResponse200 getWeather(String country, String city) {
+    public Data25WeatherGet200Response getWeather(String country, String city) {
         String URI = String.format("%s%s,%s&appid=%s", weatherUrl, city, country, apiKey);
         return restTemplate.getForObject(
-                URI, InlineResponse200.class);
+                URI, Data25WeatherGet200Response.class);
     }
 }

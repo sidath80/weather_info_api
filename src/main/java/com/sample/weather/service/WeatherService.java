@@ -4,11 +4,12 @@ import com.sample.weather.entity.Weather;
 import com.sample.weather.exception.InternalServerException;
 import com.sample.weather.repoitory.WeatherH2Repository;
 import com.sample.weather.repoitory.WeatherUpstreamRepository;
-import com.weather.model.InlineResponse200;
-import com.weather.model.InlineResponse200Weather;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import com.weather.model.Data25WeatherGet200Response;
+import com.weather.model.Data25WeatherGet200ResponseWeatherInner;
+
 
 @Service
 @RequiredArgsConstructor
@@ -18,9 +19,9 @@ public class WeatherService {
     private final WeatherH2Repository weatherH2Repository;
 
     public String getWeather(String country, String city) {
-        InlineResponse200 weatherData = weatherRepository.getWeather(country, city);
+        Data25WeatherGet200Response weatherData = weatherRepository.getWeather(country, city);
         String description = weatherData.getWeather().stream()
-                .map(InlineResponse200Weather::getDescription)
+                .map(Data25WeatherGet200ResponseWeatherInner::getDescription)
                 .findAny()
                 .orElseThrow(() -> new InternalServerException("weather details not found"));
 

@@ -4,8 +4,8 @@ import com.sample.weather.exception.ClientRequestException;
 import com.sample.weather.exception.InternalServerException;
 import com.sample.weather.repoitory.WeatherH2Repository;
 import com.sample.weather.repoitory.WeatherUpstreamRepository;
-import com.weather.model.InlineResponse200;
-import com.weather.model.InlineResponse200Weather;
+import com.weather.model.Data25WeatherGet200Response;
+import com.weather.model.Data25WeatherGet200ResponseWeatherInner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,10 +35,10 @@ class WeatherServiceTest {
     private WeatherUpstreamRepository weatherRepository;
 
     @Mock
-    InlineResponse200 weatherData;
+    Data25WeatherGet200Response weatherData;
 
     @Mock
-    InlineResponse200Weather weather;
+    Data25WeatherGet200ResponseWeatherInner weather;
 
     @Test
     void getWeatherSuccessForUkLondon() {

@@ -1,23 +1,36 @@
-buildscript {
+/*buildscript {
     ext {
         generatedSourcesDir = "${buildDir}/generated/src/main/java"
         set('snippetsDir', file("build/generated-snippets"))
     }
-}
+}*/
+
+/*plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.3'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.openapi.generator' version '7.14.0'
+    id 'org.asciidoctor.convert' version '1.5.8'
+}*/
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.4.5'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.openapi.generator' version '5.2.1'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id "io.freefair.lombok" version "8.4"
+    id 'org.hidetake.swagger.generator' version '2.19.2'
 }
 
 group 'com.sample.weather'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+/*sourceCompatibility = 21
+targetCompatibility = 21*/
+
+java {
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+}
 
 repositories {
     mavenCentral()
@@ -26,22 +39,97 @@ repositories {
     }
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+processResources {
+    dependsOn(generateSwaggerCode)
+}
+
+/*compileJava.dependsOn tasks.swaggerSources
+processResources.dependsOn tasks.generateSwaggerCode*/
+
+/*openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$projectDir/src/main/resources/api.yml"
+    outputDir = "$projectDir/build/generated"
+    apiPackage = "com.weather.api"
+    modelPackage = "com.weather.model"
+    useSpringBoot3 =  "true"
+    configOptions.set([
+            dateLibrary: "java21",
+            interfaceOnly: "true"
+    ])
+    library = "spring-boot"
+    sourceSets.main.java.srcDirs = ['build/generated/src/main/java', 'src/main/java']
+}*/
+
+swaggerSources {
+    petstore {
+        inputFile = file("${rootDir}/src/main/resources/api.yml")
+        code {
+            language = 'spring'
+            configFile = file("${rootDir}/src/main/resources/config.json")
+            //what to generate. Optional.
+            components = [models: true, apis: true, supportingFiles: 'ApiUtil.java']
+            dependsOn validation //first validate the yaml
+        }
+    }
+}
+
+compileJava.dependsOn swaggerSources.petstore.code
+sourceSets.main.java.srcDir "${rootDir}/build/swagger-code-petstore/src/main/java"
+sourceSets.main.resources.srcDir "${rootDir}/build/swagger-code-petstore/src/main/resources"
+
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0'
+
+    //we also set heteoas to true in config.json
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+    runtimeOnly 'com.h2database:h2'
+
+    //open api code generation
+    swaggerCodegen 'org.openapitools:openapi-generator-cli:7.3.0'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
+
+    //open api ui
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.mock-server:mockserver-netty:3.10.8'
+    testImplementation 'org.mock-server:mockserver-client-java:3.10.8'
+}
+
+
+/*dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-    implementation 'io.swagger:swagger-annotations:1.6.11'
+    //implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    //implementation 'io.swagger:swagger-annotations:1.6.16'
     implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0'
+    //implementation 'javax.validation:validation-api:2.0.1.Final'
+    //swaggerCodegen 'org.openapitools:openapi-generator-cli:7.3.0'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.38'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -49,30 +137,14 @@ dependencies {
     testImplementation 'org.mock-server:mockserver-client-java:3.10.8'
 
     runtimeOnly 'com.h2database:h2'
-}
-
-openApiGenerate {
-    generatorName = "spring"
-    inputSpec = "$projectDir/src/main/resources/api.yml"
-    outputDir = "$projectDir/build/generated"
-    apiPackage = "com.weather.api"
-    modelPackage = "com.weather.model"
-    configOptions.set([
-            dateLibrary: "java8",
-            interfaceOnly: "true"
-    ])
-    library = "spring-boot"
-    sourceSets.main.java.srcDirs = ['build/generated/src/main/java', 'src/main/java']
-}
-compileJava.dependsOn tasks.openApiGenerate
-processResources.dependsOn tasks.openApiGenerate
+}*/
 
 test {
     useJUnitPlatform()
-    outputs.dir snippetsDir
+    //outputs.dir snippetsDir
 }
 
-asciidoctor {
+/*asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
-}
+}*/
