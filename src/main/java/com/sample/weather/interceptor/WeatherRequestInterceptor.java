@@ -21,7 +21,7 @@ public class WeatherRequestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (request.getRequestURI().equals("/v1/weather")) {
+        if (request.getRequestURI().equals("/v2/weather")) {
             validateApiKey(request);
             validateRequestParameters(request);
         }

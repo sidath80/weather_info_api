@@ -19,7 +19,7 @@ public class AccessRateMonitorService {
     private Map<String, Bucket> requestCache = new HashMap<>();
 
     public AccessRateMonitorService(
-            @Value("${weather.api.allowed-rate:5}") int rate,
+            @Value("${weather.api.allowed-rate:1000}") int rate,
             @Value("${weather.api.allowed-rate-window-hours:1}") int timeFrameHours) {
         this.rate = rate;
         this.timeWindowHours = timeFrameHours;
