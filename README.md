@@ -109,6 +109,10 @@ All configuration are in the application.yml
 
 * In production API-KEY should implement using JWT and validating via API gateway. (KONG)
 * Dockerize the application and deploy it in Kubernetes.
+
+## Deployment on Docker and Kubernetes  in AWS EKS
+
+### Dockerize and Run Locally
 ```shell
 
 ./gradlew bootJar
@@ -119,6 +123,12 @@ OR
 
 Build image: ./gradlew docker
 Build and run: ./gradlew runDockerContainer
+```
+
+### Dockerize and Run on AWS EKS
+
+
+```shell
 
 # Dockerize and Deploy to Kubernetes
 docker login (username sidathd)
@@ -155,5 +165,13 @@ kubectl get svc weather-info-api
 kubectl logs weather-info-api-54854d54c7-swv47
 ```
 
+## Scanning the application using Snyk
+```shell
+npm install -g snyk
+snyk auth
+snyk container monitor sidathd/weather-info-api:latest
+
+snyk container test sidathd/weather-info-api:latest
+```
 
 
