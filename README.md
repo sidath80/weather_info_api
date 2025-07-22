@@ -108,6 +108,52 @@ All configuration are in the application.yml
 ## Improvements
 
 * In production API-KEY should implement using JWT and validating via API gateway. (KONG)
+* Dockerize the application and deploy it in Kubernetes.
+```shell
+
+./gradlew bootJar
+docker build -t your-dockerhub-username/weather-info-api:latest .
+docker run -p 8088:8088 your-dockerhub-username/weather-info-api:latest
+
+OR
+
+Build image: ./gradlew docker
+Build and run: ./gradlew runDockerContainer
+
+# Dockerize and Deploy to Kubernetes
+docker login (username sidathd)
+Create the repository on Docker Hub if it does not exist.
+docker docker push sidathd/weather-info-api:latest
+
+
+brew install awscli kubectl eksctl
+aws configure
+
+# Create EKS Cluster 
+eksctl create cluster --name weatereks --region us-east-1 --nodes 2
+
+## Dockerize the application for linux/amd64
+docker buildx build --platform linux/amd64 -t sidathd/weather-info-api:latest .
+docker push sidathd/weather-info-api:linux
+
+## Kubernetes Deployment
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+kubectl rollout restart deployment weather-info-api
+
+## Kubernetes Commands for pods
+kubectl describe pod
+kubectl get pod 
+kubectl get pods -o wide 
+kubectl get pods -l app=weather-info-api
+kubectl get pods -l app=weather-info-api -o wide
+kubectl get pods -l app=weather-info-api -o jsonpath='{.items[*].status.containerStatuses[*].ready}'
+
+kubectl get svc weather-info-api
+
+## Logs pods
+kubectl logs weather-info-api-54854d54c7-swv47
+```
 
 
 

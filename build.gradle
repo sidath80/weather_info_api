@@ -4,6 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
     id "io.freefair.lombok" version "8.4"
     id 'org.hidetake.swagger.generator' version '2.19.2'
+    id 'com.palantir.docker' version '0.35.0'
 }
 
 group 'com.sample.weather'
@@ -76,4 +77,26 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+docker {
+    name "sidathd/weather-info-api:latest"
+    files bootJar.archiveFile.get().asFile
+    buildArgs(['JAR_FILE': bootJar.archiveFileName.get()])
+    dockerfile file('Dockerfile')
+    tags 'latest'
+}
+
+task runDockerContainer(type: Exec) {
+    commandLine 'docker', 'run', '-p', '8088:8088', 'sidathd/weather-info-api:latest'
+}
+
+task runAppInDocker(type: Exec) {
+    dependsOn bootJar
+    doFirst {
+        exec {
+            commandLine 'docker', 'build', '-t', 'your-dockerhub-username/weather-info-api:latest', '.'
+        }
+    }
+    commandLine 'docker', 'run', '-p', '8088:8088', 'your-dockerhub-username/weather-info-api:latest'
 }

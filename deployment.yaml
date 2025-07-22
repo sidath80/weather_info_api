@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-info-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: weather-info-api
+  template:
+    metadata:
+      labels:
+        app: weather-info-api
+    spec:
+      containers:
+        - name: weather-info-api
+          image: sidathd/weather-info-api:linux2
+          ports:
+            - containerPort: 8088
